@@ -27,7 +27,6 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-
 // main page
 app.get('/',(req, res) => {
     console.log("Success");
@@ -46,15 +45,6 @@ app.post('/register', (req, res) => {
     id = req.body.id
     pw = req.body.pw
     rpw = req.body.rpw
-
-    query = "SELECT * FROM users WHERE id = '" + id + "'";
-    conn.query(query, function(err, data) {
-        if(data.length == 0){
-            console.log("Good");
-        }else{
-          res.send("<script>alert('이미 존재하는 사용자입니다.');history.go(-1);</script>");
-        }
-    });
 
     if(pw !== rpw){
         res.send("<script>alert('동일한 비밀번호를 입력해주세요.');history.go(-1);</script>");
