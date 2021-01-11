@@ -22,9 +22,6 @@ WF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ---
 # Project Member
 `Jeongwon Jo (Captain)`<br>
-`Dongyeon Kim`<br>
-`Geonwoo Lee`<br>
-`Sangmin Lee`
 
 ---
 
