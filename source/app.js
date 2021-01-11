@@ -55,11 +55,11 @@ app.post('/register', (req, res) => {
     id = req.body.id
     pw = req.body.pw
     rpw = req.body.rpw
-    
+
     if(name == '' || id == '' || pw == '' || rpw == ''){
-        res.send("<script>alert('빈 값이 존재하면 안 됩니다.');history.go(-1);</script");
+        res.send("<script>alert('빈 값이 존재하면 안 됩니다.');history.go(-1);</script>");
     }
-    
+
     else{
         query = "SELECT * FROM users WHERE id = '" + id + "'";
         getuser(query, function(err, data){
@@ -80,9 +80,10 @@ app.post('/register', (req, res) => {
                     console.log(query);
                     conn.query(query, function(err, rows){
                         if(err) { res.send(err);}
-                        res.redirect("/login");
+                        else {res.redirect("/login");}
                     });
                 }
+              }
             }
         });
      }
@@ -140,5 +141,4 @@ app.post('/update', (req, res) => {
 
 app.listen(PORT, () => {
     console.log("Listeing PORT " + PORT + "....");
-}
-           
+});
