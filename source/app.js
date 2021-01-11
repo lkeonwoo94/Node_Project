@@ -39,6 +39,7 @@ app.get('/register', (req, res) => {
     res.render('register.ejs');
 });
 
+// Same User Check Function
 function getuser(sql, callback){
   conn.query(sql, function (err, rows){
       if(err)
