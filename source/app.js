@@ -55,31 +55,37 @@ app.post('/register', (req, res) => {
     id = req.body.id
     pw = req.body.pw
     rpw = req.body.rpw
-
-    query = "SELECT * FROM users WHERE id = '" + id + "'";
-    getuser(query, function(err, data){
-        if(err){
-          console.log("Error : ", err)
-        }
-        else{
-          console.log("User Information : ", data);
-          if(data){
-            res.send("<script>alert('이미 사용 중인 아이디입니다.');history.go(-1);</script>");
-          }
-          else{
-            if(pw !== rpw){
-                res.send("<script>alert('동일한 비밀번호를 입력해주세요.');history.go(-1);</script>");
+    
+    if(name == '' || id == '' || pw == '' || rpw == ''){
+        res.send("<script>alert('빈 값이 존재하면 안 됩니다.');history.go(-1);</script");
+    }
+    
+    else{
+        query = "SELECT * FROM users WHERE id = '" + id + "'";
+        getuser(query, function(err, data){
+            if(err){
+                console.log("Error : ", err)
             }
             else{
-                query = "insert into users(name, id, pw, D) values('" + name + "', '" + id + "', '" + pw + "', NOW())";
-                console.log(query);
-                conn.query(query, function(err, rows){
-                    if(err) { throw err;}
-                    res.redirect("/login");
-                });
+              console.log("User Information : ", data);
+              if(data){
+                  res.send("<script>alert('이미 사용 중인 아이디입니다.');history.go(-1);</script>");
+              }
+              else{
+                if(pw !== rpw){
+                    res.send("<script>alert('동일한 비밀번호를 입력해주세요.');history.go(-1);</script>");
+                }
+                else{
+                    query = "insert into users(name, id, pw, D) values('" + name + "', '" + id + "', '" + pw + "', NOW())";
+                    console.log(query);
+                    conn.query(query, function(err, rows){
+                        if(err) { res.send(err);}
+                        res.redirect("/login");
+                    });
+                }
             }
-        }
-    });
+        });
+     }
 });
 
 // Login Page
