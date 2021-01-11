@@ -1,18 +1,17 @@
 // Express.js
-const express = require('express');
+const express = require("express");
 const app = express();
-const bodyParser = require('body-parser');
 
 // Crypto
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 function sha256(data) {
   return crypto.createHash("sha256").update(data, "binary").digest("hex");
 }
 
 // DB Config
-const mysql = require('mysql');
-const dbconfig = require('./config/db.js');
+const mysql = require("mysql");
+const dbconfig = require("./config/db.js");
 const conn = dbconfig.init();
 
 // PORT Definition
@@ -24,8 +23,9 @@ dbconfig.connect(conn);
 app.set('views', __dirname + '/template');
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
 
 // main page
 app.get('/',(req, res) => {
@@ -39,6 +39,15 @@ app.get('/register', (req, res) => {
     res.render('register.ejs');
 });
 
+function getuser(sql, callback){
+  conn.query(sql, function (err, rows){
+      if(err)
+        callback(err, null);
+      else
+        callback(null, rows[0]);
+  });
+}
+
 // Register Logic
 app.post('/register', (req, res) => {
     name = req.body.name
@@ -46,11 +55,30 @@ app.post('/register', (req, res) => {
     pw = req.body.pw
     rpw = req.body.rpw
 
-    if(pw !== rpw){
-        res.send("<script>alert('동일한 비밀번호를 입력해주세요.');history.go(-1);</script>");
-    }
-
-    res.end("GOOD");
+    query = "SELECT * FROM users WHERE id = '" + id + "'";
+    getuser(query, function(err, data){
+        if(err){
+          console.log("Error : ", err)
+        }
+        else{
+          console.log("User Information : ", data);
+          if(data){
+            res.send("<script>alert('이미 사용 중인 아이디입니다.');history.go(-1);</script>");
+          }
+          else{
+            if(pw !== rpw){
+                res.send("<script>alert('동일한 비밀번호를 입력해주세요.');history.go(-1);</script>");
+            }
+            else{
+                query = "insert into users(name, id, pw, D) values('" + name + "', '" + id + "', '" + pw + "', NOW())";
+                console.log(query);
+                conn.query(query, function(err, rows){
+                    if(err) { throw err;}
+                    res.redirect("/login");
+                });
+            }
+        }
+    });
 });
 
 // Login Page
@@ -105,4 +133,5 @@ app.post('/update', (req, res) => {
 
 app.listen(PORT, () => {
     console.log("Listeing PORT " + PORT + "....");
-})
+}
+           
